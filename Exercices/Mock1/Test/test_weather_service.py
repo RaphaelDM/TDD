@@ -3,10 +3,12 @@ import pytest
 from unittest.mock import Mock
 
 import sys, os
+
 # ajoute le dossier parent (Mock1) au PYTHONPATH
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from weather_service import WeatherService, WeatherAPI, WeatherData
+
 
 @pytest.fixture
 def api():
@@ -20,7 +22,9 @@ def service(api):
 
 def test_get_current_weather_success(service, api):
     api.get_current_weather.return_value = {
-        "temp_c": 20, "humidity": 50, "condition": "Sunny"
+        "temp_c": 20,
+        "humidity": 50,
+        "condition": "Sunny",
     }
     result = service.get_current_weather("Paris")
     assert result.temperature_c == 20
@@ -41,7 +45,9 @@ def test_get_forecast_success(service, api):
 
 def test_cache_prevents_repeated_calls(service, api):
     api.get_current_weather.return_value = {
-        "temp_c": 25, "humidity": 40, "condition": "Clear"
+        "temp_c": 25,
+        "humidity": 40,
+        "condition": "Clear",
     }
     service.get_current_weather("Paris")
     service.get_current_weather("Paris")
@@ -50,7 +56,9 @@ def test_cache_prevents_repeated_calls(service, api):
 
 def test_cache_expires_after_one_hour(service, api):
     api.get_current_weather.return_value = {
-        "temp_c": 20, "humidity": 50, "condition": "Sunny"
+        "temp_c": 20,
+        "humidity": 50,
+        "condition": "Sunny",
     }
     service.get_current_weather("Paris")
     api.get_current_weather.reset_mock()
@@ -88,21 +96,29 @@ def test_api_500_exception(service, api):
 
 
 def test_forecast_cache(service, api):
-    api.get_forecast.return_value = [{"temp_c": 21, "humidity": 45, "condition": "Windy"}]
+    api.get_forecast.return_value = [
+        {"temp_c": 21, "humidity": 45, "condition": "Windy"}
+    ]
     service.get_forecast("Bordeaux", 1)
     service.get_forecast("Bordeaux", 1)
     api.get_forecast.assert_called_once()
 
 
 def test_multiple_cities_cache_independent(service, api):
-    api.get_current_weather.return_value = {"temp_c": 10, "humidity": 80, "condition": "Fog"}
+    api.get_current_weather.return_value = {
+        "temp_c": 10,
+        "humidity": 80,
+        "condition": "Fog",
+    }
     service.get_current_weather("Paris")
     service.get_current_weather("Lyon")
     assert api.get_current_weather.call_count == 2
 
 
 def test_forecast_with_different_days(service, api):
-    api.get_forecast.return_value = [{"temp_c": 25, "humidity": 40, "condition": "Sunny"}]
+    api.get_forecast.return_value = [
+        {"temp_c": 25, "humidity": 40, "condition": "Sunny"}
+    ]
     service.get_forecast("Paris", 3)
     service.get_forecast("Paris", 5)
     assert api.get_forecast.call_count == 2
