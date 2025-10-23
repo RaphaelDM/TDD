@@ -1,0 +1,44 @@
+name: CI - Python Weather Service
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Récupération du code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Configuration de Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13.2"
+
+      # 3️⃣ Installation des dépendances
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov flake8 black
+
+      # 4️⃣ Vérification du formatage (black)
+      - name: Format Check (black)
+        run: black --check Exercices/Mock1
+
+      # 5️⃣ Vérification de la qualité du code (flake8)
+      - name: Linting (flake8)
+        run: flake8 Exercices/Mock1 --max-line-length=100 --statistics
+
+      # 6️⃣ Exécution des tests unitaires + couverture
+      - name: Run tests
+        run: pytest Exercices/Mock1/Test --cov=Exercices/Mock1 --cov-fail-under=80
+
+      # 7️⃣ Génération d'un rapport de couverture
+      - name: Generate coverage report
+        run: pytest Exercices/Mock1/Test --cov=Exercices/Mock1 --cov-report=xml
