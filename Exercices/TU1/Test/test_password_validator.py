@@ -26,25 +26,35 @@ class TestPasswordValidator:
         is_valid, errors = validator.validate()
         assert is_valid is False
         assert "missing lowercase" in errors
-    def test_password_missing_special(self):
+    def test_password_missing_special_return_KO(self):
         validator = PasswordValidator("NoSpecial1")
         is_valid, errors = validator.validate()
         assert is_valid is False
         assert "missing special" in errors
-    def test_password_contains_space(self):
+    def test_password_contains_space_return_KO(self):
         validator = PasswordValidator("Has Space1!")
         is_valid, errors = validator.validate()
         assert is_valid is False
         assert "contains space" in errors
-    def test_password_contains_username(self):
+    def test_password_contains_username_return_KO(self):
         validator = PasswordValidator("UserName1!", username="username")
         is_valid, errors = validator.validate()
         assert is_valid is False
         assert "contains username" in errors
-    def test_password_none(self):
+    def test_password_none_return_KO(self):
         validator = PasswordValidator(None)
         is_valid, errors = validator.validate()
         assert is_valid is False
         assert "password is None" in errors
+    
+    def test_get_strength_OK(self):
+        validator = PasswordValidator("Weak1!")
+        assert validator.get_strength() == "Refuser"
+        
+        validator = PasswordValidator("MoyenP4ss!")
+        assert validator.get_strength() == "Moyen"
+        
+        validator = PasswordValidator("Str0ngP@ssw0rd!")
+        assert validator.get_strength() == "Fort"
     
 

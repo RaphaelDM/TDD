@@ -30,3 +30,15 @@ class PasswordValidator:
             errors.append("contains username")
 
         return (len(errors) == 0), errors
+    
+    def get_strength(self) -> str:
+        is_valid, errors = self.validate()
+        if not is_valid:
+            return "Refuser"
+        length = len(self.password)
+        if length >= 12:
+            return "Fort"
+        elif length >= 8:
+            return "Moyen"
+        else:
+            return "Faible"
