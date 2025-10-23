@@ -2,7 +2,8 @@ import time
 import pytest
 from unittest.mock import Mock
 
-import sys, os
+import sys
+import os
 
 # ajoute le dossier parent (Mock1) au PYTHONPATH
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
